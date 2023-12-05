@@ -22,7 +22,7 @@ function Home() {
         modules={[Navigation]}
         className="mySwiper mt-14"
       >
-        <SwiperSlide className="flex  justify-center">
+        <SwiperSlide className="flex justify-center">
           <img
             src="https://images.pexels.com/photos/1598508/pexels-photo-1598508.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
             alt="Slide 1"
@@ -53,7 +53,7 @@ function Home() {
           <span className="text-red-600">Discover</span> Latest Products{" "}
         </h2>
 
-        <div className="mt-10  grid place-items-center grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
+        <div className="mt-10  grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
           {latestProducts.map((product) => {
             return (
               <ProductCard

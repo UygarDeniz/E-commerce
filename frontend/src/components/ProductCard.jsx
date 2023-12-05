@@ -13,10 +13,10 @@ function ProductCard({
   return (
     <Link
       to={`/product/${_id}`}
-      className="bg-gray-100 flex flex-col justify-between border-2 rounded-md p-4 h-full"
+      className="bg-gray-100 flex flex-col justify-between border-2 rounded-md  w-full p-4"
     >
-      <div className="h-full  flex flex-col justify-center">
-        <img src={image} className=""></img>
+      <div className="h-[400px] flex flex-col justify-center align-center">
+        <img src={image} className="max-h-[380px] " ></img>
       </div>
       <div>
         <h3 className="text-2xl font-bold">{name}</h3>
