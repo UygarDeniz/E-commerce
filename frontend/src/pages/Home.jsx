@@ -37,13 +37,13 @@ function Home() {
         <SwiperSlide className="flex  justify-center">
           <img
             src="https://images.pexels.com/photos/2294342/pexels-photo-2294342.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            alt="Slide 2"
+            alt="Slide 3"
           />
         </SwiperSlide>
         <SwiperSlide className="flex  justify-center">
           <img
             src="https://images.pexels.com/photos/581087/pexels-photo-581087.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            alt="Slide 2"
+            alt="Slide 4"
           />
         </SwiperSlide>
       </Swiper>

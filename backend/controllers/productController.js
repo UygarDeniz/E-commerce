@@ -1,29 +1,36 @@
 import Product from "../models/productModel.js";
 
-
-
 export const getAllProducts = async (req, res) => {
-    try {
-        const products = await Product.find()
-        return res.status(200).json(products)
-    }
-    catch (error) {
-        return res.status(500).json({ message: error.message })
-    }
-}
+  try {
+    const products = await Product.find();
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 export const getLatestProducts = async (req, res) => {
-    try {
-        const products = await Product.find().sort({ createdAt: -1 }).limit(6)
-        return res.status(200).json(products)
+  try {
+    const products = await Product.find().sort({ createdAt: -1 }).limit(6);
+
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      return res.status(200).json(product);
     }
-    catch (error) {
-        return res.status(500).json({ message: error.message })
-    }
-}
-
-
-
+    return res.status(404).json({ message: "Product not found" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 // ADMIN
 export const addProduct = async (req, res) => {
