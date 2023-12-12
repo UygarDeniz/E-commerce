@@ -9,6 +9,7 @@ import {
 
 function CartCard({ product }) {
   const dispatch = useDispatch();
+  
   function addToCartHandler() {
     dispatch(addToCart({ ...product, quantity: quantity + 1 }));
   }

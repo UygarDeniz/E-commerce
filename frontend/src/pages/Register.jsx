@@ -2,17 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { register } from "../slices/userSlice";
 import { reset } from "../slices/userSlice";
-
+import { useNavigate } from "react-router-dom";
 function Register() {
   const [formData, setFormData] = useState({
     email: "",
     username: "",
     password: "",
   });
-
+  const navigate = useNavigate();
   const { loading, error, success, message, userInfo } = useSelector(
     (state) => state.user
   );
+  const dispatch = useDispatch();
+  
   useEffect(() => {
     if (userInfo) {
       navigate("/");
@@ -21,7 +23,6 @@ function Register() {
     dispatch(reset());
   }, [loading, error, success, message]);
 
-  const dispatch = useDispatch();
   
   function handleChange(e) {
     setFormData((prevData) => ({

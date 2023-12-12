@@ -1,6 +1,7 @@
 import React from "react";
 import CartCard from "../components/CartCard";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function Cart() {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -27,9 +28,13 @@ function Cart() {
               )}
               $
             </h2>
-            <button className="bg-gray-800 px-4 p-2 rounded-xl text-3xl  text-white hover:bg-gray-500">
+            <Link
+              to="/shipping"
+              className="bg-gray-800 px-4 p-2 rounded-xl text-3xl text-white
+              hover:bg-gray-500"
+            >
               Checkout
-            </button>
+            </Link>
           </div>
         </div>
       ) : (
