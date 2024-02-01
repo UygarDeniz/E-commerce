@@ -29,17 +29,20 @@ function Header() {
           Home
         </Link>
         <Link
-          to="/categories"
-          className="px-4 py-2 rounded-xl text-xl  text-white hover:bg-gray-600"
-        >
-          Categories
-        </Link>
-        <Link
           to="/cart"
           className="flex text- items-center gap-2 px-4 py-2 rounded-xl text-xl  text-white hover:bg-gray-600"
         >
-          <FaShoppingCart /> <span className="text-red-500">({cartItems.length})</span>
+          <FaShoppingCart />{" "}
+          <span className="text-red-500">({cartItems.length})</span>
         </Link>
+        {userInfo && userInfo.isAdmin && (
+          <Link
+            to="/admin"
+            className="px-4 py-2 rounded-xl text-xl  text-white hover:bg-gray-600"
+          >
+            Admin
+          </Link>
+        )}
         {userInfo ? (
           <button
             onClick={handleLogout}

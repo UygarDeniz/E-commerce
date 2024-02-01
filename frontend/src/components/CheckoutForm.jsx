@@ -4,6 +4,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { useDispatch } from "react-redux";
 
 export default function CheckoutForm() {
   const stripe = useStripe();
@@ -11,6 +12,8 @@ export default function CheckoutForm() {
 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!stripe) {
@@ -41,7 +44,7 @@ export default function CheckoutForm() {
           break;
       }
     });
-  }, [stripe]);
+  }, [stripe, dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,12 +60,10 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        
-        return_url: "http://localhost:5173/success",
+        return_url: `http://localhost:5173/success/`,
       },
     });
 
-    
     if (error.type === "card_error" || error.type === "validation_error") {
       setMessage(error.message);
     } else {

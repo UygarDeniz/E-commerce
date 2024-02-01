@@ -43,9 +43,13 @@ function Cart() {
             Your Cart is Empty
           </h1>
           <div className="flex justify-center mt-4 ">
-            <button className="bg-gray-800 px-4 p-2 rounded-xl text-3xl  text-white hover:bg-gray-500">
+            <Link
+              to="/"
+              className="bg-gray-800 px-4 p-2 rounded-xl text-3xl text-white
+              hover:bg-gray-500"
+            >
               Go Shopping
-            </button>
+            </Link>
           </div>
         </>
       )}

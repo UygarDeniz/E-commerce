@@ -11,7 +11,7 @@ const stripePromise = loadStripe(
 function Payment() {
   const [clientSecret, setClientSecret] = useState("");
   const cart = useSelector((state) => state.cart);
-  console.log(cart);
+
   const navigate = useNavigate();
   useEffect(() => {
     if (cart.cartItems.length === 0) {
@@ -29,7 +29,31 @@ function Payment() {
         },
         body: JSON.stringify({ items: cart.cartItems }),
       });
+
+      const createOrder = async () => {
+        try {
+          const response = await fetch("/api/order/create-order", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              itemsFromClient: cart.cartItems,
+              shippingAddress: cart.shippingAddress,
+            }),
+          });
+
+          const data = await response.json();
+          console.log(data);
+        } catch (error) {
+          console.log(error);
+        }
+
+      };
+      
       const data = await response.json();
+      
+      createOrder();
       setClientSecret(data.clientSecret);
       console.log(data.clientSecret);
     }

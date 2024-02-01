@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { saveShippingAddress } from "../slices/cartSlice";
 import { useNavigate } from "react-router-dom";
 function Shipping() {
@@ -12,6 +12,13 @@ function Shipping() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const cart = useSelector((state) => state.cart);
+  useEffect(() => {
+    if (cart.cartItems.length === 0) {
+      navigate("/cart");
+    }
+  }, []);
+
   function handleChange(e) {
     setAddress((prev) => {
       return { ...prev, [e.target.id]: e.target.value };
@@ -20,6 +27,7 @@ function Shipping() {
 
   function handleSubmit(e) {
     e.preventDefault();
+
     dispatch(saveShippingAddress(address));
     navigate("/payment");
   }

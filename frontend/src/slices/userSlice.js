@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
-  userInfo: null,
+  userInfo: localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null,
   loading: false,
   error: false,
   success: false,
@@ -48,8 +48,9 @@ export const login = createAsyncThunk(
         const errorData = await res.json();
         return thunkAPI.rejectWithValue(errorData.message);
       }
-
-      return await res.json();
+      const data = await res.json();
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -64,6 +65,7 @@ export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
         "Content-Type": "application/json",
       },
     });
+    localStorage.removeItem("userInfo");
     return await res.json();
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message);

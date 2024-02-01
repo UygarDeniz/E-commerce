@@ -91,3 +91,59 @@ export const addProduct = async (req, res) => {
     });
   }
 };
+
+export const editProduct = async (req, res) => {
+  const { name, image, brand, category, description, price, countInStock } =
+    req.body;
+  if (
+    !name ||
+    !image ||
+    !brand ||
+    !category ||
+    !description ||
+    !price ||
+    !countInStock
+  ) {
+    return res.status(400).json({
+      message: "Please provide all fields",
+    });
+  }
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      product.name = name;
+      product.image = image;
+      product.brand = brand;
+      product.category = category;
+      product.description = description;
+      product.price = price;
+      product.countInStock = countInStock;
+      await product.save();
+      return res.status(200).json(product);
+    } else {
+      return res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    
+    if (product) {
+     
+      return res.status(200).json({ message: "Product deleted" });
+    } else {
+      return res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
