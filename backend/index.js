@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import path from "path";
+
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 
@@ -20,7 +20,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 app.use(express.static(path.resolve(__dirname, "../frontend/dist")));
-
 
 app.use(
   session({
@@ -72,7 +71,7 @@ app.use("/api/products", productRouter);
 app.use("/api/order", orderRouter);
 
 app.get("*", (req, res) => {
-  response.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
+  res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
 });
 
 app.listen(process.env.PORT || 3000, () => {
