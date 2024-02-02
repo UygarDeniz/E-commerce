@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
+import path, { dirname } from "path";
 
 import authRouter from "./routes/userRoutes.js";
 import productRouter from "./routes/productRoutes.js";
@@ -16,10 +16,11 @@ import Order from "./models/orderModel.js";
 
 mongoose.connect(process.env.MONGO_URL);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 const app = express();
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.use(express.static(path.resolve(__dirname, "../frontend/dist")));
+
 
 app.use(
   session({
@@ -71,7 +72,7 @@ app.use("/api/products", productRouter);
 app.use("/api/order", orderRouter);
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+  response.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
 });
 
 app.listen(process.env.PORT || 3000, () => {
