@@ -71,7 +71,7 @@ app.use("/api/products", productRouter);
 app.use("/api/order", orderRouter);
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + "../frontend/dist/index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
 app.listen(process.env.PORT || 3000, () => {
