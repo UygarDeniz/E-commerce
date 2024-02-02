@@ -17,6 +17,9 @@ import Header from "./components/Header";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
 import Orders from "./pages/Admin/Orders";
+import Profile from "./pages/Profile";
+import ChangePassword from "./pages/ChangePassword";
+import SearchResult from "./pages/SearchResult";
 
 function App() {
   return (
@@ -27,6 +30,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/product/:id" element={<Product />} />
+        <Route path="/search/:keyword" element={<SearchResult />} />
         <Route path="/cart" element={<Cart />} />
 
         {/* Admin only */}
@@ -43,6 +47,8 @@ function App() {
           <Route path="/shipping" element={<Shipping />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/success" element={<SuccessPayment />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/change-password" element={<ChangePassword />} />
         </Route>
       </Routes>
     </Router>

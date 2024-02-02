@@ -56,7 +56,7 @@ export const createOrder = async (req, res) => {
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-    
+
     const newOrder = new Order({
       user: req.user._id,
       products: updatedItemsWithPrice,
@@ -78,6 +78,20 @@ export const getOrders = async (req, res) => {
   try {
     const orders = await Order.find({}).populate("user");
     res.json(orders);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getMyOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.user._id });
+    if (!orders) {
+      return res.status(404).json({
+        message: "Orders not found",
+      });
+    }
+    res.status(200).json(orders);
   } catch (error) {
     console.log(error);
   }

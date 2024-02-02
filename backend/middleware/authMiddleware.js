@@ -3,7 +3,6 @@ import User from "../models/userModel.js";
 
 export const authUser = async (req, res, next) => {
   const token = req.cookies.token;
-  
 
   if (token) {
     try {
@@ -13,14 +12,14 @@ export const authUser = async (req, res, next) => {
       next();
     } catch (error) {
       console.log(error);
-      res.status(401).json({
+
+      return res.status(401).json({
         message: "Not authorized",
       });
     }
   } else {
-    res.status(401).json({
+    return res.status(401).json({
       message: "Not authorized / no token",
     });
   }
-}
-
+};

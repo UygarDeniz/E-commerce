@@ -32,6 +32,19 @@ export const getProductById = async (req, res) => {
   }
 };
 
+export const getProductsBySearch = async (req, res) => {
+  const keyword = req.params.keyword;
+  
+  try {
+    const products = await Product.find({
+      name: { $regex: keyword, $options: "i" },
+    });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // ADMIN
 export const addProduct = async (req, res) => {
   const { name, image, brand, category, description, price, countInStock } =
@@ -134,9 +147,8 @@ export const editProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
-    
+
     if (product) {
-     
       return res.status(200).json({ message: "Product deleted" });
     } else {
       return res.status(404).json({ message: "Product not found" });
