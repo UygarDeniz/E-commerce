@@ -1,5 +1,9 @@
 import "dotenv/config";
 import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
 import authRouter from "./routes/userRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
@@ -12,8 +16,11 @@ import Order from "./models/orderModel.js";
 
 mongoose.connect(process.env.MONGO_URL);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const app = express();
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
 app.use(
   session({
     secret: "your secret here",
@@ -62,6 +69,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);
 app.use("/api/order", orderRouter);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "../frontend/dist/index.html"));
+});
 
 app.listen(3000, () => {
   console.log("Server is listening on port 3000");
