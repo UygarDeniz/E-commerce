@@ -60,7 +60,7 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `http://localhost:5173/success/`,
+        return_url: `https://e-ticaret-3fd43a33605a.herokuapp.com/success/`,
       },
     });
 

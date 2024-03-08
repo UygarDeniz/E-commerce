@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaPlus, FaMinus, FaTrashAlt } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import {
@@ -9,7 +9,7 @@ import {
 
 function CartCard({ product }) {
   const dispatch = useDispatch();
-  
+
   function addToCartHandler() {
     dispatch(addToCart({ ...product, quantity: quantity + 1 }));
   }
@@ -23,13 +23,9 @@ function CartCard({ product }) {
 
   return (
     <div className="grid grid-cols-2 mt-10 border-2 border-gray-600 p-6 items-center">
-    <div className=" flex justify-end mr-10 ">
-      <img
-        src={image}
-        alt={name}
-        className="max-h-[200px] max-w-[200px] "
-      />
-    </div>
+      <div className=" flex justify-end mr-10 ">
+        <img src={image} alt={name} className="max-h-[200px] max-w-[200px] " />
+      </div>
       <div className="flex flex-col justify-between">
         <h3 className="text-4xl font-bold">{name}</h3>
         <p className="text-xl">{brand}</p>
