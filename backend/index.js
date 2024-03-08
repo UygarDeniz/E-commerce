@@ -13,6 +13,7 @@ import Stripe from "stripe";
 import bodyParser from "body-parser";
 import session from "express-session";
 import Order from "./models/orderModel.js";
+import webhookRouter from "./routes/webhookRoute.js";
 
 mongoose.connect(process.env.MONGO_URL);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -31,38 +32,7 @@ app.use(
 
 app.use(cookieParser());
 
-app.post(
-  "/webhook",
-  bodyParser.raw({ type: "application/json" }),
-  async (req, res) => {
-    let event;
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        req.headers["stripe-signature"],
-        process.env.STRIPE_WEBHOOK
-      );
-    } catch (err) {
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    if (event.type === "payment_intent.succeeded") {
-      const paymentIntent = event.data.object;
-      const order = await Order.findOne({ paymentIntentId: paymentIntent.id });
-
-      if (order) {
-        console.log(`Payment for order ${order.id} was successful!`);
-        order.isPaid = true;
-        await order.save();
-      } else {
-        console.log(`No order found for payment intent ${paymentIntent.id}`);
-      }
-    }
-
-    // Return a response to acknowledge receipt of the event
-    res.json({ received: true });
-  }
-);
+app.use("/webhook", webhookRouter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
