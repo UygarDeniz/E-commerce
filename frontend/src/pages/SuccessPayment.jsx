@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../slices/cartSlice";
 
-
 function SuccessPayment() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -18,11 +17,7 @@ function SuccessPayment() {
       <button
         onClick={() => navigate("/")}
         className="bg-gray-800 px-4 py-2 rounded-xl text-3xl text-white hover:bg-gray-500 mt-4"
-        
-      >
-
-      
-      </button>
+      >Keep Shoping</button>
     </div>
   );
 }
