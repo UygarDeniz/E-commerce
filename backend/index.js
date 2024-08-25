@@ -10,9 +10,7 @@ import orderRouter from "./routes/orderRoutes.js";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import Stripe from "stripe";
-import bodyParser from "body-parser";
 import session from "express-session";
-import Order from "./models/orderModel.js";
 import webhookRouter from "./routes/webhookRoute.js";
 
 mongoose.connect(process.env.MONGO_URL);
@@ -41,9 +39,9 @@ app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);
 app.use("/api/order", orderRouter);
 
-/* app.get("*", (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
-}); */
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server is listening on port 3000");
