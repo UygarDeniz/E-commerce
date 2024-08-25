@@ -30,7 +30,7 @@ app.use(
 
 app.use(cookieParser());
 
-app.use("/webhook", webhookRouter);
+app.use("/api/webhook", webhookRouter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
