@@ -1,4 +1,4 @@
-import Product from "../models/productModel.js";
+import Product from '../models/productModel.js';
 
 export const getAllProducts = async (req, res) => {
   try {
@@ -26,7 +26,7 @@ export const getProductById = async (req, res) => {
     if (product) {
       return res.status(200).json(product);
     }
-    return res.status(404).json({ message: "Product not found" });
+    return res.status(404).json({ message: 'Product not found' });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -34,10 +34,10 @@ export const getProductById = async (req, res) => {
 
 export const getProductsBySearch = async (req, res) => {
   const keyword = req.params.keyword;
-  
+
   try {
     const products = await Product.find({
-      name: { $regex: keyword, $options: "i" },
+      name: { $regex: keyword, $options: 'i' },
     });
     res.json(products);
   } catch (error) {
@@ -47,6 +47,12 @@ export const getProductsBySearch = async (req, res) => {
 
 // ADMIN
 export const addProduct = async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({
+      message: 'You are not authorized to perform this action',
+    });
+  }
+
   const { name, image, brand, category, description, price, countInStock } =
     req.body;
 
@@ -60,16 +66,16 @@ export const addProduct = async (req, res) => {
     !countInStock
   ) {
     return res.status(400).json({
-      message: "Please provide all fields",
+      message: 'Please provide all fields',
     });
   }
-
+  const user = req.user;
   try {
     const product = await Product.findOne({ name });
 
     if (product) {
       return res.status(400).json({
-        message: "Product already exists",
+        message: 'Product already exists',
       });
     }
 
@@ -96,7 +102,7 @@ export const addProduct = async (req, res) => {
       });
     }
     return res.status(400).json({
-      message: "Invalid product data",
+      message: 'Invalid product data',
     });
   } catch (error) {
     return res.status(500).json({
@@ -106,8 +112,15 @@ export const addProduct = async (req, res) => {
 };
 
 export const editProduct = async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({
+      message: 'You are not authorized to perform this action',
+    });
+  }
+
   const { name, image, brand, category, description, price, countInStock } =
     req.body;
+
   if (
     !name ||
     !image ||
@@ -118,7 +131,7 @@ export const editProduct = async (req, res) => {
     !countInStock
   ) {
     return res.status(400).json({
-      message: "Please provide all fields",
+      message: 'Please provide all fields',
     });
   }
   try {
@@ -135,7 +148,7 @@ export const editProduct = async (req, res) => {
       await product.save();
       return res.status(200).json(product);
     } else {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: 'Product not found' });
     }
   } catch (error) {
     return res.status(500).json({
@@ -145,13 +158,19 @@ export const editProduct = async (req, res) => {
 };
 
 export const deleteProduct = async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({
+      message: 'You are not authorized to perform this action',
+    });
+  }
+
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
 
     if (product) {
-      return res.status(200).json({ message: "Product deleted" });
+      return res.status(200).json({ message: 'Product deleted' });
     } else {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: 'Product not found' });
     }
   } catch (error) {
     return res.status(500).json({
