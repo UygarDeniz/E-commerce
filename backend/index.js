@@ -22,7 +22,7 @@ app.use(express.static(path.resolve(__dirname, "../frontend/dist")));
 
 app.use(
   session({
-    secret: "your secret here",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
   })
@@ -39,9 +39,9 @@ app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);
 app.use("/api/order", orderRouter);
 
-app.get("*", (req, res) => {
+/* app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
-});
+}); */
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server is listening on port 3000");

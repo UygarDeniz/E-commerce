@@ -1,7 +1,9 @@
 import Stripe from 'stripe';
+import Order from '../models/orderModel.js';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function webhook(req, res) {
   let event;
+  console.log("Stripe webhook received: ", req.body);
   try {
     event = stripe.webhooks.constructEvent(
       req.body,
@@ -11,10 +13,11 @@ export default async function webhook(req, res) {
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
+ 
 
   if (event.type === 'payment_intent.succeeded') {
     const paymentIntent = event.data.object;
-    const order = await order.findOne({ paymentIntentId: paymentIntent.id });
+    const order = await Order.findOne({ paymentIntentId: paymentIntent.id });
 
     if (order) {
       console.log(`Payment for order ${order.id} was successful!`);

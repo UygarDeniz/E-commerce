@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaSignInAlt, FaSignOutAlt, FaShoppingCart } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";

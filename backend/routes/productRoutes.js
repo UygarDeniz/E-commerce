@@ -16,7 +16,7 @@ router.post("/", authUser, addProduct)
 router.get("/",  getAllProducts)
 router.get("/latest", getLatestProducts)
 
-router.get("/search/:keyword", getProductsBySearch)
+router.get("/search/:term", getProductsBySearch)
 
 router.get("/:id", getProductById)
 router.put("/:id", authUser ,editProduct)

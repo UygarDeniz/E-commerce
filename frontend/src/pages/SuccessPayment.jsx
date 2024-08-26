@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { clearCart } from "../slices/cartSlice";
 
 function SuccessPayment() {
@@ -9,7 +9,7 @@ function SuccessPayment() {
 
   useEffect(() => {
     dispatch(clearCart());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">

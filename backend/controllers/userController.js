@@ -1,13 +1,13 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import User from "../models/userModel.js";
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import User from '../models/userModel.js';
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
     return res.status(400).json({
-      message: "Please provide all fields",
+      message: 'Please provide all fields',
     });
   }
 
@@ -15,7 +15,7 @@ export const register = async (req, res) => {
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
-        message: "User already exists",
+        message: 'User already exists',
       });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,10 +28,10 @@ export const register = async (req, res) => {
 
     if (newUser) {
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
+        expiresIn: '1h',
       });
 
-      res.cookie("token", token, { httpOnly: true });
+      res.cookie('token', token, { httpOnly: true });
 
       return res.status(201).json({
         _id: newUser._id,
@@ -39,7 +39,7 @@ export const register = async (req, res) => {
       });
     } else {
       return res.status(400).json({
-        message: "Invalid user data",
+        message: 'Invalid user data',
       });
     }
   } catch (error) {
@@ -57,7 +57,7 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        message: "User does not exist",
+        message: 'User does not exist',
       });
     }
 
@@ -65,12 +65,12 @@ export const login = async (req, res) => {
 
     if (!isPasswordCorrect) {
       return res.status(400).json({
-        message: "Invalid credentials",
+        message: 'Invalid credentials',
       });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
-    res.cookie("token", token, { httpOnly: true });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    res.cookie('token', token, { httpOnly: true });
     return res.status(200).json({
       _id: user._id,
       username: user.username,
@@ -84,19 +84,19 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie('token');
   return res.status(200).json({
-    message: "Logged out",
+    message: 'Logged out',
   });
 };
 
 export const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password");
+    const user = await User.findById(req.params.id).select('-password');
 
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
@@ -114,13 +114,35 @@ export const updateUserProfile = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        message: 'User not found',
+      });
+    }
+
+    const { username, email } = req.body;
+    const emailExists = await User.findOne({
+      email,
+
+    });
+    
+    if (emailExists && emailExists._id.toString() !== req.params.id) {
+      return res.status(400).json({
+        message: 'Email already exists',
+      });
+    }
+
+    const usernameExists = await User.findOne({
+      username,
+    });
+
+
+    if (usernameExists && usernameExists._id.toString() !== req.params.id) {
+      return res.status(400).json({
+        message: 'Username already exists',
       });
     }
 
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
-
     const updatedUser = await user.save();
 
     return res.status(200).json({
@@ -140,7 +162,7 @@ export const changePassword = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
@@ -153,13 +175,13 @@ export const changePassword = async (req, res) => {
 
     if (!isPasswordCorrect) {
       return res.status(400).json({
-        message: "Invalid credentials",
+        message: 'Invalid credentials',
       });
     }
 
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
-        message: "Passwords do not match",
+        message: 'Passwords do not match',
       });
     }
 
@@ -170,7 +192,7 @@ export const changePassword = async (req, res) => {
     await user.save();
 
     return res.status(200).json({
-      message: "Password updated successfully",
+      message: 'Password updated successfully',
     });
   } catch (error) {
     return res.status(500).json({
@@ -178,5 +200,3 @@ export const changePassword = async (req, res) => {
     });
   }
 };
-
-

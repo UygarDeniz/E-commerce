@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useState, useEffect } from "react";

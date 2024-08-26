@@ -33,11 +33,11 @@ export const getProductById = async (req, res) => {
 };
 
 export const getProductsBySearch = async (req, res) => {
-  const keyword = req.params.keyword;
+  const term = req.params.term;
 
   try {
     const products = await Product.find({
-      name: { $regex: keyword, $options: 'i' },
+      name: { $regex: term, $options: 'i' },
     });
     res.json(products);
   } catch (error) {

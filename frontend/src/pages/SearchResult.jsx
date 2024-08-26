@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 
 function SearchResult() {
   const [products, setProducts] = useState([]);
-  const { keyword } = useParams();
+  const { term } = useParams();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`/api/products/search/${keyword}`);
+        const res = await fetch(`/api/products/search/${term}`);
         const data = await res.json();
         setProducts(data);
       } catch (error) {
@@ -16,12 +16,12 @@ function SearchResult() {
       }
     };
     fetchProducts();
-  }, []);
+  }, [term]);
 
   return (
     <div className="p-4 mt-10">
       <h1 className="mx-20 text-2xl font-bold mb-4">
-        Search results for "{keyword}":
+        Search results for "{term}":
       </h1>
       {products.length > 0 ? (
         <section className="mt-10 mx-20">

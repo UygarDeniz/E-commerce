@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { useDispatch } from "react-redux";
@@ -47,7 +47,7 @@ function Product() {
           </p>
           <div className="flex">
             <FaPlus
-              onClick={() => setQuantity((prev) => prev + 1)}
+              onClick={() => setQuantity((prev) => (prev + 1 <= product.countInStock ? prev + 1 : prev))}
               className="text-2xl cursor-pointer"
             />
             <input
