@@ -68,9 +68,11 @@ function Product() {
               className='text-2xl cursor-pointer'
             />
           </div>
+          
           <button
-            className='bg-red-600 text-white text-xl px-4 py-2 rounded-md mt-8'
+            className={`bg-red-600 text-white text-xl px-4 py-2 rounded-md mt-8 disabled:opacity-50`}
             onClick={addToCartHandler}
+            disabled={product.countInStock === 0}
           >
             Add to Cart
           </button>

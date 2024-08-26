@@ -32,37 +32,30 @@ function CartCard({ product }) {
         <p className='text-xl'>{brand}</p>
         <p className='text-2xl font-bold'>{price}$</p>
         <div className='flex gap-10 items-center'>
-          {countInStock >
-            0(
-              <>
-                {quantity > 1 ? (
-                  <FaMinus
-                    onClick={() => {
-                      setError('');
-                      decreaseQuantityHandler();
-                    }}
-                    className='text-4xl cursor-pointer'
-                  />
-                ) : (
-                  <FaTrashAlt
-                    onClick={removeFromCartHandler}
-                    className='text-4xl cursor-pointer'
-                  />
-                )}
-                <p className='text-xl font-bold select-none	'>{quantity}</p>
-                <FaPlus
-                  onClick={
-                    quantity < countInStock
-                      ? addToCartHandler
-                      : () =>
-                          setError(
-                            `There are only ${countInStock} items in stock`
-                          )
-                  }
-                  className='text-2xl cursor-pointer'
-                />
-              </>
-            )}
+          {quantity > 1 ? (
+            <FaMinus
+              onClick={() => {
+                setError('');
+                decreaseQuantityHandler();
+              }}
+              className='text-4xl cursor-pointer'
+            />
+          ) : (
+            <FaTrashAlt
+              onClick={removeFromCartHandler}
+              className='text-4xl cursor-pointer'
+            />
+          )}
+          <p className='text-xl font-bold select-none	'>{quantity}</p>
+          <FaPlus
+            onClick={
+              quantity < countInStock
+                ? addToCartHandler
+                : () =>
+                    setError(`There are only ${countInStock} items in stock`)
+            }
+            className='text-2xl cursor-pointer'
+          />
         </div>
         {error && <p className='text-red-600'>{error}</p>}
       </div>
