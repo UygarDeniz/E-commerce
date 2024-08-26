@@ -30,3 +30,8 @@ Admin Account:
 ## Deployment
 
 - Heroku
+
+
+
+#### Todo
+- Refactor `useEffect` hooks for data fetching and mutations by implementing RTK Query or React Query for improved state management and caching.
