@@ -3,10 +3,18 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import useLatestProducts from '../../hooks/useLatestProducts';
+import { useQuery } from '@tanstack/react-query';
+import { fetchLatestProducts } from '../data-access/products';
+import Loading from '../components/Loading';
 function Home() {
-  const latestProducts = useLatestProducts();
-
+  const {
+    data: latestProducts,
+    isError,
+    isPending,
+  } = useQuery({
+    queryKey: ['latestProducts'],
+    queryFn: fetchLatestProducts,
+  });
   return (
     <div>
       <Swiper
@@ -46,20 +54,28 @@ function Home() {
         </h2>
 
         <div className='mt-10  grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4'>
-          {latestProducts.map((product) => {
-            return (
-              <ProductCard
-                key={product._id}
-                _id={product._id}
-                name={product.name}
-                image={product.image}
-                brand={product.brand}
-                description={product.description}
-                category={product.category}
-                price={product.price}
-              />
-            );
-          })}
+          {isPending ? (
+            <Loading />
+          ) : isError ? (
+            <div className='text-2xl text-red-500'>
+              Error fetching latest products
+            </div>
+          ) : (
+            latestProducts?.map((product) => {
+              return (
+                <ProductCard
+                  key={product._id}
+                  _id={product._id}
+                  name={product.name}
+                  image={product.image}
+                  brand={product.brand}
+                  description={product.description}
+                  category={product.category}
+                  price={product.price}
+                />
+              );
+            })
+          )}
         </div>
       </section>
     </div>

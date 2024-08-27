@@ -1,3 +1,5 @@
+
+// old
 import { useState, useEffect } from 'react';
 
 export default function useLatestProducts() {
