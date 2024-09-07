@@ -1,10 +1,9 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   PaymentElement,
   useStripe,
   useElements,
-} from "@stripe/react-stripe-js";
-import { useDispatch } from "react-redux";
+} from '@stripe/react-stripe-js';
 
 export default function CheckoutForm() {
   const stripe = useStripe();
@@ -13,15 +12,13 @@ export default function CheckoutForm() {
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
     if (!stripe) {
       return;
     }
 
     const clientSecret = new URLSearchParams(window.location.search).get(
-      "payment_intent_client_secret"
+      'payment_intent_client_secret'
     );
 
     if (!clientSecret) {
@@ -30,21 +27,21 @@ export default function CheckoutForm() {
 
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
       switch (paymentIntent.status) {
-        case "succeeded":
-          setMessage("Payment succeeded!");
+        case 'succeeded':
+          setMessage('Payment succeeded!');
           break;
-        case "processing":
-          setMessage("Your payment is processing.");
+        case 'processing':
+          setMessage('Your payment is processing.');
           break;
-        case "requires_payment_method":
-          setMessage("Your payment was not successful, please try again.");
+        case 'requires_payment_method':
+          setMessage('Your payment was not successful, please try again.');
           break;
         default:
-          setMessage("Something went wrong.");
+          setMessage('Something went wrong.');
           break;
       }
     });
-  }, [stripe, dispatch]);
+  }, [stripe]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,37 +61,37 @@ export default function CheckoutForm() {
       },
     });
 
-    if (error.type === "card_error" || error.type === "validation_error") {
+    if (error.type === 'card_error' || error.type === 'validation_error') {
       setMessage(error.message);
     } else {
-      setMessage("An unexpected error occurred.");
+      setMessage('An unexpected error occurred.');
     }
 
     setIsLoading(false);
   };
 
   const paymentElementOptions = {
-    layout: "tabs",
+    layout: 'tabs',
   };
 
   return (
     <form
-      id="payment-form"
+      id='payment-form'
       onSubmit={handleSubmit}
-      className="mx-auto mt-8 w-3/4 lg:w-1/2 p-20 border-4 rounded shadow-md"
+      className='mx-auto mt-8 w-3/4 lg:w-1/2 p-20 border-4 rounded shadow-md'
     >
-      <PaymentElement id="payment-element" options={paymentElementOptions} />
+      <PaymentElement id='payment-element' options={paymentElementOptions} />
       <button
         disabled={isLoading || !stripe || !elements}
-        id="submit"
-        className="bg-gray-600 mt-10 text-white text-2xl p-2 rounded hover:bg-gray-500 focus:outline-none focus:ring focus:border-blue-300"
+        id='submit'
+        className='bg-gray-600 mt-10 text-white text-2xl p-2 rounded hover:bg-gray-500 focus:outline-none focus:ring focus:border-blue-300'
       >
-        <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+        <span id='button-text'>
+          {isLoading ? <div className='spinner' id='spinner'></div> : 'Pay now'}
         </span>
       </button>
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
+      {message && <div id='payment-message'>{message}</div>}
     </form>
   );
 }

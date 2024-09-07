@@ -1,131 +1,174 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  fetchProductById,
+  updateProductById,
+} from '../../data-access/products';
 
 function ProductEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState({
-    name: "",
-    price: "",
-    description: "",
-    countInStock: "",
-    image: "",
-    brand: "",
-    category: "",
+  const queryClient = useQueryClient();
+
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['product', id],
+    queryFn: () => fetchProductById(id),
+  });
+
+  const mutation = useMutation({
+    mutationFn: (updatedProduct) =>
+      updateProductById( id, updatedProduct ),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['product', id]);
+      navigate('/admin/products');
+    },
+  });
+
+  const [formState, setFormState] = useState({
+    name: '',
+    price: '',
+    description: '',
+    countInStock: '',
+    image: '',
+    brand: '',
+    category: '',
   });
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await fetch(`/api/products/${id}`);
-        const data = await res.json();
-        setProduct(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchProduct();
-  }, [id]);
+    if (product) {
+      setFormState({
+        name: product.name || '',
+        price: product.price || '',
+        description: product.description || '',
+        countInStock: product.countInStock || '',
+        image: product.image || '',
+        brand: product.brand || '',
+        category: product.category || '',
+      });
+    }
+  }, [product]);
 
   const handleChange = (e) => {
-    setProduct({ ...product, [e.target.name]: e.target.value });
+    setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch(`/api/products/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product),
-      });
-      if (res.ok) {
-        navigate("/admin/products");
-      } else {
-        console.log("Product update failed");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    mutation.mutate(formState);
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching product data</div>;
 
   return (
-    <div className="container mx-auto px-4 mt-6">
-      <h1 className="text-2xl font-bold mb-4">Edit Product</h1>
-      <form onSubmit={handleSubmit}>
-        <label className="block">
-          <span className="text-gray-700">Name</span>
+    <div className='container mx-auto mt-6 shadow-lg py-10 px-16 bg-white rounded-lg mx'>
+      <h1 className='text-2xl font-bold mb-6'>Edit Product</h1>
+      <form onSubmit={handleSubmit} className='space-y-6'>
+        <div className='flex flex-col'>
+          <label htmlFor='name' className='text-gray-700 font-semibold'>
+            Name
+          </label>
           <input
-            type="text"
-            name="name"
-            value={product.name}
+            type='text'
+            id='name'
+            name='name'
+            value={formState.name}
             onChange={handleChange}
-            className="mt-1 py-3 px-1  block w-full rounded-md border-gray-300 shadow-sm"
+            className='mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
-        </label>
-        <label className="block mt-4">
-          <span className="text-gray-700">Price</span>
+        </div>
+
+        <div className='flex flex-col'>
+          <label htmlFor='price' className='text-gray-700 font-semibold'>
+            Price
+          </label>
           <input
-            type="number"
-            name="price"
-            value={product.price}
+            type='number'
+            id='price'
+            name='price'
+            value={formState.price}
             onChange={handleChange}
-            className="mt-1 py-3 px-1  block w-full rounded-md border-gray-300 shadow-sm"
+            className='mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
-        </label>
-        <label className="block mt-4">
-          <span className="text-gray-700">Count In Stock</span>
+        </div>
+
+        <div className='flex flex-col'>
+          <label htmlFor='countInStock' className='text-gray-700 font-semibold'>
+            Count In Stock
+          </label>
           <input
-            type="number"
-            name="countInStock"
-            value={product.countInStock}
+            type='number'
+            id='countInStock'
+            name='countInStock'
+            value={formState.countInStock}
             onChange={handleChange}
-            className="mt-1 py-3 px-1  block w-full rounded-md border-gray-300 shadow-sm"
+            className='mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
-        </label>
-        <label className="block">
-          <span className="text-gray-700">Description</span>
+        </div>
+
+        <div className='flex flex-col'>
+          <label htmlFor='description' className='text-gray-700 font-semibold'>
+            Description
+          </label>
+          <textarea
+            id='description'
+            name='description'
+            value={formState.description}
+            onChange={handleChange}
+            className='mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+          />
+        </div>
+
+        <div className='flex flex-col'>
+          <label htmlFor='brand' className='text-gray-700 font-semibold'>
+            Brand
+          </label>
           <input
-            type="text"
-            name="description"
-            value={product.description}
+            type='text'
+            id='brand'
+            name='brand'
+            value={formState.brand}
             onChange={handleChange}
-            className="mt-1  py-3 px-1 block w-full rounded-md border-gray-300 shadow-sm"
+            className='mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
-        </label>
-        <label className="block">
-          <span className="text-gray-700">Brand</span>
+        </div>
+
+        <div className='flex flex-col'>
+          <label htmlFor='category' className='text-gray-700 font-semibold'>
+            Category
+          </label>
           <input
-            type="text"
-            name="brand"
-            value={product.brand}
+            type='text'
+            id='category'
+            name='category'
+            value={formState.category}
             onChange={handleChange}
-            className="mt-1  py-3 px-1 block w-full rounded-md border-gray-300 shadow-sm"
+            className='mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
-        </label>
-        <label className="block">
-          <span className="text-gray-700">Category</span>
+        </div>
+
+        <div className='flex flex-col'>
+          <label htmlFor='image' className='text-gray-700 font-semibold'>
+            Image URL
+          </label>
           <input
-            type="text"
-            name="category"
-            value={product.category}
+            type='url'
+            id='image'
+            name='image'
+            value={formState.image}
             onChange={handleChange}
-            className="mt-1  py-3 px-1 block w-full rounded-md border-gray-300 shadow-sm"
+            className='mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
-        </label>
-        <label className="block">
-          <span className="text-gray-700">İmage</span>
-          <input
-            type="text"
-            name="image"
-            value={product.image}
-            onChange={handleChange}
-            className="mt-1 py-3 px-1 block w-full rounded-md border-gray-300 shadow-sm"
-          />
-        </label>
+        </div>
+
         <button
-          type="submit"
-          className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          type='submit'
+          className='te py-2 px-4 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
         >
           Update Product
         </button>

@@ -1,45 +1,50 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { login } from '../slices/userSlice';
-import { reset } from '../slices/userSlice';
+import { setUser } from '../slices/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 
 function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-  const [errorMessage, setErrorMessage] = useState('');
-  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.user);
   const navigate = useNavigate();
-  const { loading, error, success, message, userInfo } = useSelector(
-    (state) => state.user
-  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (userInfo) {
       navigate('/');
     }
+  }, [userInfo, navigate]);
 
-    if (error) {
-      setErrorMessage(message);
-      console.log(errorMessage);
-    }
+  const { mutate, isLoading, error } = useMutation({
+    mutationFn: async (formData) => {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        if (data?.message) throw new Error(data.message);
+        else throw new Error('Failed to login');
+      }
+      return data;
+    },
+    onSuccess: (data) => {
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      dispatch(setUser(data));
+      navigate('/');
+    },
+  });
 
-    dispatch(reset());
-  }, [
-    loading,
-    error,
-    success,
-    message,
-    userInfo,
-    dispatch,
-    navigate,
-    errorMessage,
-  ]);
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(login(formData));
+    mutate(formData);
   }
 
   function handleChange(e) {
@@ -53,7 +58,7 @@ function Login() {
     <div className='min-h-screen items-center flex justify-center text-center px-8 bg-gray-200'>
       <form onSubmit={handleSubmit} className='space-y-4 max-w-md w-full'>
         <h1 className='mb-10 font-bold text-4xl'>Login</h1>
-        {errorMessage && <h2 className='text-red-400 '>{errorMessage}</h2>}
+        {error && <h2 className='text-red-400 '>{error.message}</h2>}
 
         <input
           type='email'
@@ -75,8 +80,11 @@ function Login() {
           className='border-2 border-black  rounded-b-md px-4 py-2 w-full block'
         />
 
-        <button className='bg-black text-white px-6 py-2 rounded-md mt-4'>
-          Login
+        <button
+          className='bg-black text-white px-6 py-2 rounded-md mt-4 disabled:opacity-50'
+          disabled={isLoading}
+        >
+          {isLoading ? 'Loading...' : 'Login'}
         </button>
       </form>
     </div>

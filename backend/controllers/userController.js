@@ -57,7 +57,7 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        message: 'User does not exist',
+        message: 'Invalid credentials',
       });
     }
 
@@ -144,12 +144,14 @@ export const updateUserProfile = async (req, res) => {
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
     const updatedUser = await user.save();
-
+  
     return res.status(200).json({
       username: updatedUser.username,
       email: updatedUser.email,
     });
   } catch (error) {
+    console.log(error);
+    
     return res.status(500).json({
       message: error.message,
     });
